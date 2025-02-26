@@ -12,6 +12,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const menuItems: { title: string; href: string; description: string }[] = [
   {
@@ -64,6 +65,11 @@ export function NavigationMenuBar() {
         </div>
         <NavigationMenu className="relative z-50">
           <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link href="/home">Home</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger className="z-50">
                 About Us
