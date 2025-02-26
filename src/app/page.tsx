@@ -1,5 +1,7 @@
 "use client";
 
+import Footer04Page from "@/components/footer-04/footer-04";
+import Hero01 from "@/components/hero-01/hero-01";
 import {
   HeroHighlightText,
   HighlightText,
@@ -8,11 +10,12 @@ import { NavigationMenuBar } from "@/components/molecules/NavigationMenuBar/Navi
 import { ThreeDCardDemo } from "@/components/molecules/ThreeDCardDemo/ThreeDCardDemo";
 import { motion } from "framer-motion";
 
-export default function Home() {
+export default function RootPage() {
   return (
     <div className="p-2 font-[family-name:var(--font-geist-sans)]">
       {/* <TabsDemo /> */}
       <NavigationMenuBar />
+      <Hero01 />
       <HeroHighlightText>
         <div className="flex">
           <div className="flex flex-col items-center justify-center">
@@ -64,6 +67,7 @@ export default function Home() {
           </div>
         </div>
       </HeroHighlightText>
+      <Footer04Page />
     </div>
   );
 }
