@@ -67,7 +67,7 @@ export function NavigationMenuBar() {
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link href="/home">Home</Link>
+                <Link href="/plp">Home</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>

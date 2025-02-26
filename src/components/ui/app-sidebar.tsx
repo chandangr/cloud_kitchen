@@ -14,8 +14,7 @@ import {
 } from "lucide-react";
 import * as React from "react";
 
-import { NavMain } from "@/components/ui/nav-main";
-import { NavProjects } from "@/components/ui/nav-projects";
+import { MenuFilter } from "@/components/ui/menu-filter";
 import { NavUser } from "@/components/ui/nav-user";
 import {
   Sidebar,
@@ -154,6 +153,13 @@ const data = {
       icon: Map,
     },
   ],
+  categories: [
+    { title: "Salads", count: 8 },
+    { title: "Bowls", count: 2 },
+    { title: "Smoothie", count: 2 },
+    { title: "Cold Press Juice", count: 3 },
+    { title: "Subscription", count: 3 },
+  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -163,8 +169,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <MenuFilter categories={data.categories} />
+        {/* <NavMain items={data.navMain} /> */}
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
