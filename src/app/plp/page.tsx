@@ -1,187 +1,191 @@
 "use client";
 
-import { Card02 } from "@/components/card-02/card-02";
-import { AppSidebar } from "@/components/ui/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import Link from "next/link";
+import { NavigationMenuBar } from "@/components/molecules/NavigationMenuBar/NavigationMenuBar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import FilterTabs from "@/components/ui/menu-filter";
 import { useState } from "react";
 
-const cardData = [
+const restaurants = [
   {
     id: 1,
-    title: "Pizza",
-    titleOwner: "Cloud Kitchen Owner",
-    description: "Delicious cheese pizza",
-    imageUrl: "/images/pizza.jpg",
+    name: "The Black Pearl",
+    description: "Continental, Salad",
+    price: "₹1,500 for two",
+    rating: 4.2,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "6.4 km",
+    offer: "Flat 20% OFF",
   },
   {
     id: 2,
-    title: "Burger",
-    titleOwner: "Cloud Kitchen Owner",
-    description: "Juicy beef burger",
-    imageUrl: "/images/burger.jpg",
+    name: "Maya",
+    description: "Asian, North Indian",
+    price: "₹1,500 for two",
+    rating: 4.4,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "5.6 km",
+    offer: "Flat 15% OFF",
   },
   {
     id: 3,
-    title: "Sushi",
-    titleOwner: "Sushi Master",
-    description: "Fresh sushi rolls",
-    imageUrl: "/images/sushi.jpg",
+    name: "Maddy's Resto Pub",
+    description: "North Indian, Continental",
+    price: "₹1,000 for two",
+    rating: 4.2,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "4.3 km",
+    offer: "Flat 45% OFF",
   },
   {
     id: 4,
-    title: "Pasta",
-    titleOwner: "Italian Chef",
-    description: "Creamy Alfredo pasta",
-    imageUrl: "/images/pasta.jpg",
+    name: "The Black Pearl",
+    description: "Continental, Salad",
+    price: "₹1,500 for two",
+    rating: 4.2,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "6.4 km",
+    offer: "Flat 20% OFF",
   },
   {
     id: 5,
-    title: "Salad",
-    titleOwner: "Health Guru",
-    description: "Fresh garden salad",
-    imageUrl: "/images/salad.jpg",
+    name: "Maya",
+    description: "Asian, North Indian",
+    price: "₹1,500 for two",
+    rating: 4.4,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "5.6 km",
+    offer: "Flat 15% OFF",
   },
   {
     id: 6,
-    title: "Tacos",
-    titleOwner: "Mexican Chef",
-    description: "Spicy beef tacos",
-    imageUrl: "/images/tacos.jpg",
+    name: "Maddy's Resto Pub",
+    description: "North Indian, Continental",
+    price: "₹1,000 for two",
+    rating: 4.2,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "4.3 km",
+    offer: "Flat 45% OFF",
   },
   {
     id: 7,
-    title: "Steak",
-    titleOwner: "Grill Master",
-    description: "Juicy grilled steak",
-    imageUrl: "/images/steak.jpg",
+    name: "The Black Pearl",
+    description: "Continental, Salad",
+    price: "₹1,500 for two",
+    rating: 4.2,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "6.4 km",
+    offer: "Flat 20% OFF",
   },
   {
     id: 8,
-    title: "Ice Cream",
-    titleOwner: "Dessert Specialist",
-    description: "Creamy vanilla ice cream",
-    imageUrl: "/images/ice-cream.jpg",
-  },
-  {
-    id: 9,
-    title: "Cupcakes",
-    titleOwner: "Baker Extraordinaire",
-    description: "Delicious chocolate cupcakes",
-    imageUrl: "/images/cupcakes.jpg",
-  },
-  {
-    id: 10,
-    title: "Sandwich",
-    titleOwner: "Deli Owner",
-    description: "Classic club sandwich",
-    imageUrl: "/images/sandwich.jpg",
-  },
-  {
-    id: 11,
-    title: "Donuts",
-    titleOwner: "Pastry Chef",
-    description: "Glazed donuts",
-    imageUrl: "/images/donuts.jpg",
-  },
-  {
-    id: 12,
-    title: "Fried Rice",
-    titleOwner: "Asian Cuisine Expert",
-    description: "Savory fried rice",
-    imageUrl: "/images/fried-rice.jpg",
-  },
-  {
-    id: 13,
-    title: "Quiche",
-    titleOwner: "French Chef",
-    description: "Delicious quiche",
-    imageUrl: "/images/quiche.jpg",
-  },
-  {
-    id: 14,
-    title: "Burrito",
-    titleOwner: "Mexican Chef",
-    description: "Loaded burrito",
-    imageUrl: "/images/burrito.jpg",
-  },
-  {
-    id: 15,
-    title: "Pancakes",
-    titleOwner: "Breakfast Specialist",
-    description: "Fluffy pancakes",
-    imageUrl: "/images/pancakes.jpg",
-  },
-  {
-    id: 16,
-    title: "Waffles",
-    titleOwner: "Breakfast Specialist",
-    description: "Crispy waffles",
-    imageUrl: "/images/waffles.jpg",
-  },
-  {
-    id: 17,
-    title: "Chili",
-    titleOwner: "Spicy Food Lover",
-    description: "Hearty chili",
-    imageUrl: "/images/chili.jpg",
-  },
-  {
-    id: 18,
-    title: "Baguette",
-    titleOwner: "French Baker",
-    description: "Freshly baked baguette",
-    imageUrl: "/images/baguette.jpg",
-  },
-  {
-    id: 19,
-    title: "Cheesecake",
-    titleOwner: "Dessert Specialist",
-    description: "Rich cheesecake",
-    imageUrl: "/images/cheesecake.jpg",
-  },
-  {
-    id: 20,
-    title: "Fruit Tart",
-    titleOwner: "Pastry Chef",
-    description: "Colorful fruit tart",
-    imageUrl: "/images/fruit-tart.jpg",
+    name: "Maya",
+    description: "Asian, North Indian",
+    price: "₹1,500 for two",
+    rating: 4.4,
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+    distance: "5.6 km",
+    offer: "Flat 15% OFF",
   },
 ];
 
 export default function Page() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const filteredCards = cardData.filter((card) =>
-    card.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRestaurants = restaurants.filter((restaurant) =>
+    restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <input
-          type="text"
-          placeholder="Search Cloud Kitchen Owner, food name, etc."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-4 p-2 border rounded"
-        />
-
-        <div className="flex flex-wrap gap-4 m-3">
-          {filteredCards.map((card) => (
-            <Link href={`/pdp/${card.id}`} key={card.id}>
-              <Card02
-                key={card.id}
-                title={card.title}
-                description={card.description}
-                titleOwner={card.titleOwner}
-                className="ml-10"
+    <div className="p-[10px_200px]">
+      <NavigationMenuBar />
+      <div className="mb-6 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Restaurants in Bengaluru</h1>
+      </div>
+      <div className="mb-4 flex flex-wrap gap-2">
+        <Button onClick={() => setIsDialogOpen(true)}>Filters</Button>
+        <Button variant="outline">Offers</Button>
+        <Button variant="outline">Rating: 4.5+</Button>
+        <Button variant="outline">Pet Friendly</Button>
+        <Button variant="outline">Outdoor Seating</Button>
+        <Button variant="outline">Serves Alcohol</Button>
+        <Button variant="outline">Open Now</Button>
+      </div>
+      <Input
+        type="text"
+        placeholder="Search for restaurant, cuisine or a dish"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mt-4 mb-4"
+      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredRestaurants.map((restaurant) => (
+          <Card key={restaurant.id} className="shadow-lg">
+            <CardHeader>
+              <CardTitle>{restaurant.name}</CardTitle>
+              <CardDescription>{restaurant.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <img
+                src={restaurant.imageUrl}
+                alt={restaurant.name}
+                className="w-full h-40 object-cover rounded-md"
               />
-            </Link>
-          ))}
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+              <div className="flex justify-between items-center mt-2">
+                <span className="font-bold">{restaurant.price}</span>
+                <span className="text-green-600">{restaurant.offer}</span>
+              </div>
+              <div className="flex justify-between items-center mt-1">
+                <span className="text-sm">Rating: {restaurant.rating}</span>
+                <span className="text-sm">{restaurant.distance}</span>
+              </div>
+              <Button className="mt-4 w-full">View Details</Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {isDialogOpen && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>Filters</DialogTitle>
+            </DialogHeader>
+            <FilterTabs
+              categories={[
+                { title: "Offers", count: 5 },
+                { title: "Rating: 4.5+", count: 10 },
+                { title: "Pet Friendly", count: 3 },
+                { title: "Outdoor Seating", count: 4 },
+                { title: "Serves Alcohol", count: 6 },
+                { title: "Open Now", count: 8 },
+              ]}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
   );
 }

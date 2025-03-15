@@ -2,28 +2,34 @@
 
 import {
   AudioWaveform,
+  BarChart,
   BookOpen,
   Bot,
+  Briefcase,
+  Clock,
   Command,
+  Database,
   Frame,
   GalleryVerticalEnd,
+  HelpCircle,
+  Home,
   Map,
   PieChart,
+  Rocket,
   Settings2,
   SquareTerminal,
+  Users,
 } from "lucide-react";
-import * as React from "react";
 
-import { MenuFilter } from "@/components/ui/menu-filter";
-import { NavUser } from "@/components/ui/nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem
 } from "@/components/ui/sidebar";
-import { TeamSwitcher } from "@/components/ui/team-switcher";
 
 // This is sample data.
 const data = {
@@ -162,21 +168,70 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+const AppSidebar = () => {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <div className="flex items-center justify-center py-4">
+          <span className="text-xl font-bold">Applicant Tracking</span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
-        <MenuFilter categories={data.categories} />
-        {/* <NavMain items={data.navMain} /> */}
-        {/* <NavProjects projects={data.projects} /> */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Home className="mr-2" /> Home
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Briefcase className="mr-2" /> Jobs
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Users className="mr-2" /> Candidates
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Clock className="mr-2" /> Time Tracking
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Database className="mr-2" /> Database
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Rocket className="mr-2" /> Projects
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <BarChart className="mr-2" /> Analytics
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Settings2 className="mr-2" /> Settings
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <HelpCircle className="mr-2" /> Help
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <div className="flex items-center justify-center py-4">
+          <span className="text-sm">© 2023 Your Company</span>
+        </div>
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
-}
+};
+
+export default AppSidebar;
