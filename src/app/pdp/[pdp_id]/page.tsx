@@ -1,62 +1,115 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Image from "next/image";
-import { useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ProductDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
-
-  // Mock data for demonstration; replace with actual data fetching logic
-  const itemDetails = {
-    1: {
-      title: "Peri Peri Paneer & Channa Salad",
-      description:
-        "A delicious salad with paneer and channa, topped with fresh vegetables.",
-      price: 320,
-      imageUrl:
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2560&auto=format&fit=crop",
-    },
-    2: {
-      title: "Crunchy Falafel & Sweet Corn Salad",
-      description:
-        "A crunchy salad with falafel and sweet corn, drizzled with a tangy dressing.",
-      price: 320,
-      imageUrl:
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2560&auto=format&fit=crop",
-    },
-    // Add more items as needed
-  }[id];
-
   return (
     <div className="p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>{itemDetails?.[id]?.title}</CardTitle>
-          <CardDescription>{itemDetails?.[id]?.description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Image
-            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2560&auto=format&fit=crop"
-            height="1000"
-            width="1000"
-            className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-            alt="Modern cloud kitchen facility"
-          />
-          <p className="mt-4 text-lg font-bold">
-            Price: ₹{itemDetails?.[id]?.price}
-          </p>
-          <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-            Add to Cart
-          </button>
-        </CardContent>
-      </Card>
+      {/* Hero Section */}
+      <div
+        className="relative h-64 bg-cover bg-center"
+        style={{ backgroundImage: "url('/path/to/your/image.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="relative z-10 text-white p-4">
+          <h1 className="text-4xl font-bold">Board 4 Bored</h1>
+          <p className="text-lg">Chinese, Fast Food</p>
+        </div>
+      </div>
+
+      {/* Offers Section */}
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold">Offers</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Flat 20% Off on Weekdays</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>₹320 guest</p>
+              <p>Pre-book offer: One exclusive with 1 month Swiggy ONE</p>
+              <p>Use at just ₹1</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Flat 10% Off</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>On total bill</p>
+              <p>
+                Walk-in offers: Pay restaurant bill via Swiggy app to avail the
+                offer
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Additional Offers Section */}
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold">Additional Offers</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Card>
+            <CardContent>
+              <p>10% cashback on orders above ₹100</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <p>Flat ₹750 Off on orders above ₹1000</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Food Section */}
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold">Food</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Cottage cheese stick</CardTitle>
+              <p>₹200</p>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Jalapeno cheese ball</CardTitle>
+              <p>₹180</p>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Onion pakoda</CardTitle>
+              <p>₹160</p>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Garlic kebab</CardTitle>
+              <p>₹220</p>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Burritos</CardTitle>
+              <p>₹250</p>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+
+      {/* Location Section */}
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold">Location</h2>
+        <p>
+          Chaitanya Plaza, 3rd Floor, Dvg Road, Basavanagudi, Bengaluru,
+          Karnataka 560004
+        </p>
+        <Button className="mt-2">View on Maps</Button>
+      </div>
     </div>
   );
 };
