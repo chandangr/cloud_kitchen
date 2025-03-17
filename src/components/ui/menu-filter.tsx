@@ -26,8 +26,6 @@ const sortOptions = [
 
 const FilterTabs: React.FC<MenuFilterProps> = ({
   categories,
-  minPrice = 0,
-  maxPrice = 1000,
 }) => {
   const [selectedSort, setSelectedSort] = React.useState("popularity");
   const [selectedCuisines, setSelectedCuisines] = React.useState<string[]>([]);

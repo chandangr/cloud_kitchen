@@ -58,10 +58,10 @@ export function NavigationMenuBar() {
     <div className="m-5 flex flex-col items-center justify-center">
       <div className="flex items-center justify-between w-full p-2">
         <div>
-          <a href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2">
             <Icons.logo className="h-8 w-8" />
             <span className="font-bold text-xl">One Stop Cloud Kitchen</span>
-          </a>
+          </Link>
         </div>
         <NavigationMenu className="relative z-50">
           <NavigationMenuList>
@@ -78,7 +78,7 @@ export function NavigationMenuBar() {
                 <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
-                      <a
+                      <Link
                         className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                         href="/"
                       >
@@ -90,7 +90,7 @@ export function NavigationMenuBar() {
                           Empowering food entrepreneurs with modern kitchen
                           spaces and comprehensive business solutions.
                         </p>
-                      </a>
+                      </Link>
                     </NavigationMenuLink>
                   </li>
                   <ListItem href="/about" title="Our Story">

@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
 
+const userDetails = {
+  name: "Chandan Gr",
+  phone: "99456222111",
+}
 const CheckoutPage = () => {
   const [address, setAddress] = useState("");
-  const [userDetails, setUserDetails] = useState({
-    name: "Chandan Gr",
-    phone: "9945622234",
-  });
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);

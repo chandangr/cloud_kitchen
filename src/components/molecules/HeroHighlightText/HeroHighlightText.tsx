@@ -1,22 +1,39 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
+import { MouseEvent, ReactNode } from "react";
+
+interface HeroHighlightTextProps {
+  children: ReactNode;
+  className?: string;
+  containerClassName?: string;
+}
+
+interface HighlightTextProps {
+  children: ReactNode;
+  className?: string;
+}
 
 export const HeroHighlightText = ({
   children,
   className,
   containerClassName,
-}) => {
+}: HeroHighlightTextProps) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  function handleMouseMove({ currentTarget, clientX, clientY }) {
+  function handleMouseMove({
+    currentTarget,
+    clientX,
+    clientY,
+  }: MouseEvent<HTMLDivElement>) {
     if (!currentTarget) return;
     const { left, top } = currentTarget.getBoundingClientRect();
 
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
   }
+
   return (
     <div
       className={cn(
@@ -25,9 +42,9 @@ export const HeroHighlightText = ({
       )}
       onMouseMove={handleMouseMove}
     >
-      <div className="absolute inset-0 bg-dot-thick-neutral-300 dark:bg-dot-thick-neutral-800  pointer-events-none" />
+      <div className="absolute inset-0 bg-dot-thick-neutral-300 dark:bg-dot-thick-neutral-800 pointer-events-none" />
       <motion.div
-        className="pointer-events-none bg-dot-thick-indigo-500 dark:bg-dot-thick-indigo-500   absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100"
+        className="pointer-events-none bg-dot-thick-indigo-500 dark:bg-dot-thick-indigo-500 absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100"
         style={{
           WebkitMaskImage: useMotionTemplate`
             radial-gradient(
@@ -50,7 +67,7 @@ export const HeroHighlightText = ({
   );
 };
 
-export const HighlightText = ({ children, className }) => {
+export const HighlightText = ({ children, className }: HighlightTextProps) => {
   return (
     <motion.span
       initial={{
@@ -70,7 +87,7 @@ export const HighlightText = ({ children, className }) => {
         display: "inline",
       }}
       className={cn(
-        `relative inline-block pb-1   px-1 rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500`,
+        `relative inline-block pb-1 px-1 rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500`,
         className
       )}
     >

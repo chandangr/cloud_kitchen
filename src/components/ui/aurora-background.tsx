@@ -1,12 +1,19 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
+
+interface AuroraBackgroundProps {
+  children: ReactNode;
+  className?: string;
+  showRadialGradient: boolean
+}
 
 export const AuroraBackground = ({
   className,
   children,
   showRadialGradient = true,
   ...props
-}) => {
+}: AuroraBackgroundProps) => {
   return (
     <main>
       <div
