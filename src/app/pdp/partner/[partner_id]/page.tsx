@@ -1,23 +1,12 @@
 "use client";
 
-import CheckoutModal from "@/components/checkout-modal/checkout-modal";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { useParams, useRouter } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
+import { Clock, MapPin, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const productList = [
@@ -55,123 +44,311 @@ const productList = [
   },
 ];
 
-const PartnerPage = () => {
-  const { partner_id } = useParams<{ partner_id: string }>();
-  const router = useRouter();
+export default function PartnerPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isVeg, setIsVeg] = useState(true); // State for Veg/Non-Veg filter
-  const [cartItems, setCartItems] = useState<
-    { productName: string; productPrice: number }[]
-  >([]);
-
-  const filteredProducts = productList.filter((product) =>
-    product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [cart, setCart] = useState<{
+    items: Array<{
+      name: string;
+      price: number;
+      quantity: number;
+    }>;
+    total: number;
+  }>({
+    items: [],
+    total: 0,
+  });
+  const router = useRouter();
 
   const addToCart = (product: {
     productName: string;
     productPrice: number;
   }) => {
-    setCartItems((prevItems) => [...prevItems, product]);
+    setCart((prevCart) => {
+      const existingItem = prevCart.items.find(
+        (item) => item.name === product.productName
+      );
+
+      if (existingItem) {
+        return {
+          items: prevCart.items.map((item) =>
+            item.name === product.productName
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+          total: prevCart.total + product.productPrice,
+        };
+      }
+
+      return {
+        items: [
+          ...prevCart.items,
+          {
+            name: product.productName,
+            price: product.productPrice,
+            quantity: 1,
+          },
+        ],
+        total: prevCart.total + product.productPrice,
+      };
+    });
   };
 
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.productPrice,
-    0
-  );
+  const removeFromCart = (productName: string, price: number) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.items.find(
+        (item) => item.name === productName
+      );
 
-  const handleCheckout = () => {
+      if (existingItem && existingItem.quantity > 1) {
+        return {
+          items: prevCart.items.map((item) =>
+            item.name === productName
+              ? { ...item, quantity: item.quantity - 1 }
+              : item
+          ),
+          total: prevCart.total - price,
+        };
+      }
+
+      return {
+        items: prevCart.items.filter((item) => item.name !== productName),
+        total: prevCart.total - price,
+      };
+    });
+  };
+
+  const getItemQuantity = (productName: string) => {
+    const item = cart.items.find((item) => item.name === productName);
+    return item?.quantity || 0;
+  };
+
+  const handleViewCart = () => {
     const queryParams = new URLSearchParams();
-    queryParams.append("items[]", JSON.stringify(cartItems));
-    queryParams.append("totalPrice", totalPrice.toString());
+    cart.items.forEach((item) => {
+      queryParams.append("items[]", JSON.stringify(item));
+    });
     router.push(`/checkout?${queryParams.toString()}`);
   };
 
   return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <h2 className="text-lg font-semibold">Menu Categories</h2>
-        </SidebarHeader>
-        <SidebarContent>
-          <Input
-            type="text"
-            placeholder="Search items..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-4"
-          />
-          <div className="flex items-center mb-4">
-            <label className="mr-2">Veg</label>
-            <input
-              type="checkbox"
-              checked={isVeg}
-              onChange={() => setIsVeg(!isVeg)}
-            />
-            <label className="ml-4 mr-2">Non-Veg</label>
-            <input
-              type="checkbox"
-              checked={!isVeg}
-              onChange={() => setIsVeg(!isVeg)}
-            />
-          </div>
-          <h3 className="text-md font-semibold">Categories</h3>
-          <ul>
-            <li>Salads</li>
-            <li>Bowls</li>
-            <li>Smoothies</li>
-            <li>Cold Press Juice</li>
-            <li>Subscription</li>
-          </ul>
-        </SidebarContent>
-        <SidebarFooter>
-          <Button className="w-full" onClick={handleCheckout}>
-            Checkout
-          </Button>
-        </SidebarFooter>
-      </Sidebar>
-      <div className="p-4 flex-1 flex">
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold mb-4">
-            Salads for Partner {partner_id}
-          </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredProducts.map((product) => (
-              <Card key={product.productName} className="shadow-lg">
-                <CardHeader>
-                  <CardTitle>{product.productName}</CardTitle>
-                  <CardDescription>
-                    {product.productDescription}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <img
-                    src={product.productImage}
-                    alt={product.productName}
-                    className="w-full h-40 object-cover rounded-md"
-                  />
-                  <p className="mt-2 text-lg font-bold">
-                    ₹{product.productPrice}
-                  </p>
-                  <Button
-                    className="mt-4 w-full"
-                    onClick={() => addToCart(product)}
+    <div className="container mx-auto p-4 space-y-6 pb-24">
+      {/* Header Section */}
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">Burger King</h1>
+
+        <Card>
+          <CardContent className="p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="secondary"
+                className="bg-green-100 text-green-800"
+              >
+                <Star className="w-4 h-4 mr-1" />
+                4.3 (33K+ ratings)
+              </Badge>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-muted-foreground">₹350 for two</span>
+            </div>
+
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <MapPin className="w-4 h-4" />
+                <span>Basavanagudi</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>25-30 mins</span>
+              </div>
+            </div>
+
+            <Badge
+              variant="outline"
+              className="bg-red-50 text-red-500 border-red-200"
+            >
+              Free delivery on orders above ₹199
+            </Badge>
+          </CardContent>
+        </Card>
+
+        {/* Deals Section */}
+        <div className="space-y-2">
+          <h2 className="text-lg font-semibold">Deals for you</h2>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            <Card className="min-w-[300px]">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">SAVE</Badge>
+                  <div>
+                    <h3 className="font-semibold">Extra ₹25 Off</h3>
+                    <p className="text-sm text-muted-foreground">
+                      APPLICABLE OVER & ABOVE COUPONS
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="min-w-[300px]">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="secondary"
+                    className="bg-orange-100 text-orange-800"
                   >
-                    Add to Cart
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                    DEAL OF DAY
+                  </Badge>
+                  <div>
+                    <h3 className="font-semibold">60% Off Upto ₹120</h3>
+                    <p className="text-sm text-muted-foreground">
+                      USE STEALDEAL
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-        <CheckoutModal
-          cartItems={cartItems}
-          totalPrice={totalPrice}
-          onCheckout={handleCheckout}
-        />
-      </div>
-    </SidebarProvider>
-  );
-};
 
-export default PartnerPage;
+        {/* Menu Section */}
+        <Separator className="my-6" />
+        <div className="text-center">
+          <h2 className="text-lg font-semibold">MENU</h2>
+        </div>
+
+        {/* Search Section */}
+        <div className="relative">
+          <Input
+            type="text"
+            placeholder="Search for dishes"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-secondary"
+          />
+        </div>
+
+        {/* Filter Tags */}
+        <div className="flex gap-2">
+          <Badge variant="outline" className="cursor-pointer">
+            Veg
+          </Badge>
+          <Badge variant="outline" className="cursor-pointer">
+            Non-veg
+          </Badge>
+          <Badge variant="outline" className="cursor-pointer">
+            Bestseller
+          </Badge>
+        </div>
+
+        {/* Menu Items */}
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Recommended (16)</h3>
+          </div>
+
+          {productList.map((product) => (
+            <Card
+              key={product.productName}
+              className="flex justify-between p-4"
+            >
+              <div className="space-y-2">
+                <Badge
+                  variant="secondary"
+                  className="bg-green-100 text-green-800"
+                >
+                  Bestseller
+                </Badge>
+                <h4 className="font-semibold">{product.productName}</h4>
+                <div className="flex items-center gap-2">
+                  <span>₹{product.productPrice}</span>
+                  <Badge variant="outline" className="text-sm">
+                    60% OFF USE STEALDEAL
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {product.productDescription}
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <img
+                  src={product.productImage}
+                  alt={product.productName}
+                  className="w-24 h-24 object-cover rounded-md"
+                />
+                {getItemQuantity(product.productName) > 0 ? (
+                  <div className="flex items-center gap-2 border rounded-lg overflow-hidden">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-none hover:bg-secondary"
+                      onClick={() =>
+                        removeFromCart(
+                          product.productName,
+                          product.productPrice
+                        )
+                      }
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-8 text-center font-medium">
+                      {getItemQuantity(product.productName)}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-none hover:bg-secondary"
+                      onClick={() => addToCart(product)}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => addToCart(product)}
+                  >
+                    ADD
+                  </Button>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Cart Summary - Fixed at Bottom */}
+        {cart.items.length > 0 && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
+            <div className="container mx-auto p-4">
+              <div
+                className="flex items-center justify-between bg-primary text-primary-foreground rounded-lg p-4 cursor-pointer"
+                onClick={handleViewCart}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span>
+                      {cart.items.reduce((sum, item) => sum + item.quantity, 0)}{" "}
+                      item{cart.items.length !== 1 ? "s" : ""}
+                    </span>
+                    <span>•</span>
+                    <span>₹{cart.total}</span>
+                  </div>
+                  {cart.total < 199 && (
+                    <Badge
+                      variant="outline"
+                      className="bg-background/10 text-primary-foreground border-primary-foreground"
+                    >
+                      Add ₹{199 - cart.total} for free delivery
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>VIEW CART</span>
+                  <ShoppingBag className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
