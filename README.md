@@ -41,6 +41,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 # finish 90% of all the client website - make it ready for marketting
 
+# - mobile authentication
+
 # get data from the DB
 
 # authentication on next application on order/checkout
