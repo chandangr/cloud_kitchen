@@ -53,13 +53,13 @@ const PaymentPage = () => {
       setIsLoading(true);
 
       const orderData = {
-        amount: 85300, // Amount in paise (₹853)
+        amount: 1000, // Amount in paise (₹853)
         currency: "INR",
       };
 
       // Create order first
       const order = await createOrder(orderData);
-
+      console.log("order", order);
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.amount,

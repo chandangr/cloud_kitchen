@@ -11,6 +11,8 @@ import { LocationSearch } from "./location-search";
 
 interface DeliveryServiceProps {
   orderId: string;
+  customerAddress?: string;
+  restaurantAddress?: string;
   items: Array<{
     name: string;
     quantity: number;

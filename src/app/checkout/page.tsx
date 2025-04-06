@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Minus, Plus } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
@@ -26,6 +26,7 @@ interface CartItem {
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [suggestions, setSuggestions] = useState("");
@@ -65,7 +66,7 @@ export default function CheckoutPage() {
       });
 
       const data = await response.json();
-
+      console.log("data", data);
       if (!data.orderId) {
         throw new Error("Error creating payment order");
       }
@@ -78,11 +79,6 @@ export default function CheckoutPage() {
         name: "Cloud Kitchen",
         description: "Food Order Payment",
         order_id: data.orderId,
-        handler: function (response: any) {
-          // Handle successful payment
-          console.log("Payment successful:", response);
-          // You can redirect to success page or show success message
-        },
         prefill: {
           name: "Customer Name",
           email: "customer@example.com",
@@ -90,6 +86,14 @@ export default function CheckoutPage() {
         },
         theme: {
           color: "#00B1A9",
+        },
+        handler: function (response: any) {
+          console.log("Payment successful:", response);
+          router.push(
+            `/payment-success?orderId=${response.razorpay_order_id}&amount=${
+              data.amount
+            }&address=${encodeURIComponent(selectedAddress)}`
+          );
         },
       };
 
