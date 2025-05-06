@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       theme: {
         color: "#EF4444",
       },
-      handler: async (response) => {
+      handler: async (response: any) => {
         try {
           // Verify payment
           const verificationResponse = await fetch("/api/verify-payment", {

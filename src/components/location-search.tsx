@@ -7,6 +7,29 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+// Define Google Maps related types
+interface GoogleGeometry {
+  location: {
+    lat: () => number;
+    lng: () => number;
+  };
+}
+
+interface GoogleGeocoderResult {
+  formatted_address: string;
+  geometry: GoogleGeometry;
+}
+
+interface GoogleGeocoderResponse {
+  results: GoogleGeocoderResult[];
+  status: string;
+}
+
+interface GooglePrediction {
+  description: string;
+  place_id: string;
+}
+
 interface LocationSearchProps {
   onLocationSelect: (location: {
     address: string;
@@ -24,9 +47,7 @@ export function LocationSearch({
 }: LocationSearchProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [predictions, setPredictions] = useState<
-    google.maps.places.AutocompletePrediction[]
-  >([]);
+  const [predictions, setPredictions] = useState<GooglePrediction[]>([]);
   const [showPredictions, setShowPredictions] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -54,7 +75,7 @@ export function LocationSearch({
             const response = await fetch(
               `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
             );
-            const data = await response.json();
+            const data: GoogleGeocoderResponse = await response.json();
             if (data.results[0]) {
               onLocationSelect({
                 address: data.results[0].formatted_address,
@@ -63,7 +84,8 @@ export function LocationSearch({
               });
               setSearchQuery(data.results[0].formatted_address);
             }
-          } catch (error) {
+          } catch (error: unknown) {
+            console.error("Error getting address from coordinates:", error);
             toast({
               title: "Error",
               description: "Failed to get address from coordinates",
@@ -73,7 +95,8 @@ export function LocationSearch({
             setIsLoading(false);
           }
         },
-        (error) => {
+        (error: GeolocationPositionError) => {
+          console.error("Geolocation error:", error);
           toast({
             title: "Error",
             description: "Failed to get current location",
@@ -102,15 +125,20 @@ export function LocationSearch({
 
     setIsLoading(true);
     try {
-      const service = new google.maps.places.AutocompleteService();
+      const service = new (window as any).google.maps.places.AutocompleteService();
       const response = await service.getPlacePredictions({
         input: query,
         types: ["address"],
       });
-      setPredictions(response.predictions);
+      setPredictions(response.predictions || []);
       setShowPredictions(true);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error fetching predictions:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch address suggestions",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -119,19 +147,25 @@ export function LocationSearch({
   const handleSelectLocation = async (placeId: string) => {
     setIsLoading(true);
     try {
-      const geocoder = new google.maps.Geocoder();
+      const geocoder = new (window as any).google.maps.Geocoder();
       const response = await geocoder.geocode({ placeId });
-      if (response.results[0]) {
-        const location = response.results[0].geometry.location;
-        onLocationSelect({
-          address: response.results[0].formatted_address,
-          lat: location.lat(),
-          lng: location.lng(),
-        });
-        setSearchQuery(response.results[0].formatted_address);
-        setShowPredictions(false);
+      
+      if (response.status !== "OK" || !response.results.length) {
+        throw new Error("No results found");
       }
-    } catch (error) {
+      
+      const result = response.results[0];
+      const location = result.geometry.location;
+      
+      onLocationSelect({
+        address: result.formatted_address,
+        lat: location.lat(),
+        lng: location.lng(),
+      });
+      setSearchQuery(result.formatted_address);
+      setShowPredictions(false);
+    } catch (error: unknown) {
+      console.error("Error getting location details:", error);
       toast({
         title: "Error",
         description: "Failed to get location details",
