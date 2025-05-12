@@ -18,6 +18,7 @@ const eslintConfig = [
       // Example: disable the 'no-unused-vars' rule
       // Replace 'no-unused-vars' with the specific rule you want to disable
       'no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn'
     },
