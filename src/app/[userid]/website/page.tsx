@@ -1,7 +1,7 @@
 import { getWebsiteDataByUserId } from "@/services/websiteBuilderService";
 import WebsiteContent from "./WebsiteContent";
 
-export default async function WebsitePage({ params }: { params: { userid: string } }) {
+export default async function WebsitePage({ params }: any) {
   try {
     const websiteData = await getWebsiteDataByUserId(params.userid);
     
