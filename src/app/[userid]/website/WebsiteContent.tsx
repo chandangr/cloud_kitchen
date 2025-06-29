@@ -73,13 +73,14 @@ export default function WebsiteContent({ websiteData }: { websiteData: WebsiteDa
           >
             {websiteData.introSection.introDescription}
           </p>
-          <Button className="mt-4">Read More</Button>
+          <Button className="mt-4" onClick={() => window.location.href = '/plp'}>Read More</Button>
         </div>
         <div className="w-full md:w-1/3 flex justify-center items-center mt-4 md:mt-0">
           {websiteData.introSection.introMedia && (
             <ThreeDCard
               buttonText="Read More"
               imageUrl={websiteData.introSection.introMedia}
+              onClick={() => window.location.href = '/plp'}
             />
           )}
         </div>
@@ -122,7 +123,7 @@ export default function WebsiteContent({ websiteData }: { websiteData: WebsiteDa
             </p>
             <Button
               className="mt-4"
-              onClick={() => (window.location.href = "#")}
+              onClick={() => window.location.href = '/plp'}
             >
               Full Menu
             </Button>
@@ -168,7 +169,7 @@ export default function WebsiteContent({ websiteData }: { websiteData: WebsiteDa
               Facebook
             </a>
           </div>
-          <Button className="mt-4">Leave Us Your Feedback</Button>
+          <Button className="mt-4" onClick={() => window.location.href = '/plp'}>Leave Us Your Feedback</Button>
         </div>
       </div>
     </div>

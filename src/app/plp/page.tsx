@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import FilterTabs from "@/components/ui/menu-filter";
+import { getAllRestaurants, RestaurantData } from "@/services/websiteBuilderService";
 import {
   ChevronDown,
   ChevronLeft,
@@ -27,108 +28,59 @@ import {
   Search,
   User,
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-const restaurants = [
-  {
-    id: 1,
-    name: "The Black Pearl",
-    description: "Continental, Salad",
-    price: "₹1,500 for two",
-    rating: 4.2,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "6.4 km",
-    offer: "Flat 20% OFF",
-  },
-  {
-    id: 2,
-    name: "Maya",
-    description: "Asian, North Indian",
-    price: "₹1,500 for two",
-    rating: 4.4,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "5.6 km",
-    offer: "Flat 15% OFF",
-  },
-  {
-    id: 3,
-    name: "Maddy's Resto Pub",
-    description: "North Indian, Continental",
-    price: "₹1,000 for two",
-    rating: 4.2,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "4.3 km",
-    offer: "Flat 45% OFF",
-  },
-  {
-    id: 4,
-    name: "The Black Pearl",
-    description: "Continental, Salad",
-    price: "₹1,500 for two",
-    rating: 4.2,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "6.4 km",
-    offer: "Flat 20% OFF",
-  },
-  {
-    id: 5,
-    name: "Maya",
-    description: "Asian, North Indian",
-    price: "₹1,500 for two",
-    rating: 4.4,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "5.6 km",
-    offer: "Flat 15% OFF",
-  },
-  {
-    id: 6,
-    name: "Maddy's Resto Pub",
-    description: "North Indian, Continental",
-    price: "₹1,000 for two",
-    rating: 4.2,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "4.3 km",
-    offer: "Flat 45% OFF",
-  },
-  {
-    id: 7,
-    name: "The Black Pearl",
-    description: "Continental, Salad",
-    price: "₹1,500 for two",
-    rating: 4.2,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "6.4 km",
-    offer: "Flat 20% OFF",
-  },
-  {
-    id: 8,
-    name: "Maya",
-    description: "Asian, North Indian",
-    price: "₹1,500 for two",
-    rating: 4.4,
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
-    distance: "5.6 km",
-    offer: "Flat 15% OFF",
-  },
-];
+
 
 export default function PLPPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [restaurants, setRestaurants] = useState<RestaurantData[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const data = await getAllRestaurants();
+        setRestaurants(data);
+      } catch (error) {
+        console.error("Error fetching restaurants:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
+
   const filteredRestaurants = restaurants.filter((restaurant) =>
-    restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
+    restaurant.website_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const defaultImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg";
+
+  if (loading) {
+    return (
+      <main>
+        <HeroSection />
+        <div className="px-[200px] py-[10px]">
+          <NavigationMenuBar />
+          <div className="container mx-auto">
+            <FoodCategories />
+          </div>
+          <div className="mb-6 flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Restaurants in Bengaluru</h1>
+          </div>
+          <div className="flex justify-center items-center h-64">
+            <div className="text-lg">Loading restaurants...</div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -163,22 +115,24 @@ export default function PLPPage() {
           {filteredRestaurants.map((restaurant) => (
             <Card key={restaurant.id} className="shadow-lg">
               <CardHeader>
-                <CardTitle>{restaurant.name}</CardTitle>
+                <CardTitle>{restaurant.website_name}</CardTitle>
                 <CardDescription>{restaurant.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <img
-                  src={restaurant.imageUrl}
-                  alt={restaurant.name}
+                <Image
+                  src={restaurant.website_logo || defaultImageUrl}
+                  alt={restaurant.website_name}
+                  width={400}
+                  height={160}
                   className="w-full h-40 object-cover rounded-md"
                 />
                 <div className="flex justify-between items-center mt-2">
-                  <span className="font-bold">{restaurant.price}</span>
-                  <span className="text-green-600">{restaurant.offer}</span>
+                  <span className="font-bold">₹1,500 for two</span>
+                  <span className="text-green-600">Flat 20% OFF</span>
                 </div>
                 <div className="flex justify-between items-center mt-1">
-                  <span className="text-sm">Rating: {restaurant.rating}</span>
-                  <span className="text-sm">{restaurant.distance}</span>
+                  <span className="text-sm">Rating: 4.2</span>
+                  <span className="text-sm">5.6 km</span>
                 </div>
                 <Button
                   className="mt-4 w-full"

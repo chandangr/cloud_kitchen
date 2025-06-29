@@ -38,6 +38,14 @@ interface WebsiteBuilderData {
   }
 }
 
+export interface RestaurantData {
+  id: string;
+  user_id: string;
+  website_name: string;
+  description: string;
+  website_logo?: string;
+  created_at: string;
+}
 
 export async function getWebsiteDataByUserId(
   userId: string
@@ -60,6 +68,23 @@ export async function getWebsiteDataByUserId(
     return data as WebsiteBuilderData;
   } catch (error) {
     console.error("Error fetching website data:", error);
+    throw error;
+  }
+}
+
+export async function getAllRestaurants(): Promise<RestaurantData[]> {
+  try {
+    const { data, error } = await supabase
+      .from("cloud_kitchen_website")
+      .select("id, user_id, website_name, description, website_logo, created_at");
+
+    if (error) {
+      throw error;
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching restaurants:", error);
     throw error;
   }
 }
