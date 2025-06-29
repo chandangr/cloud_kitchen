@@ -11,7 +11,7 @@ const Hero01 = () => {
           Just released v1.0.0
         </Badge>
         <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl md:leading-[1.2] font-bold">
-          Welcome to Our Cloud Kitchen
+          Welcome to Our Home Cloud Kitchen
         </h1>
         <p className="mt-6 text-[17px] md:text-lg">
           Discover a variety of delicious meals prepared with the freshest

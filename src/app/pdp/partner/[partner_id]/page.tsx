@@ -6,43 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Clock, MapPin, Minus, Plus, ShoppingBag, Star } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-
-const productList = [
-  {
-    productName: "Peri Peri Paneer & Channa Salad (Medium)",
-    productImage:
-      "https://assets.limetray.com/assets/user_images/menus/compressed/1738739762_1736262375PeriPeriPaneerChannaSalad.jpg",
-    productDescription:
-      "A flavorful mix of black channa, fresh lettuce, purple cabbage, carrot, zucchini, bell peppers, and paneer, drizzled with a zesty chili lemon honey dressing.",
-    productPrice: 320,
-  },
-  {
-    productName: "Crunchy Falafel & Sweet Corn Salad (Medium)",
-    productImage:
-      "https://assets.limetray.com/assets/user_images/menus/compressed/1738739783_1736262398CrunchyFalafelSweetCornSalad.jpg",
-    productDescription:
-      "Air-fried falafel paired with fresh lettuce, capsicum, cucumber, cherry tomatoes, and sweet corn, drizzled with creamy tahini dressing.",
-    productPrice: 320,
-  },
-  {
-    productName: "Zesty Mushroom Salad (Medium)",
-    productImage:
-      "https://assets.limetray.com/assets/user_images/menus/compressed/1738739802_1736262427ZestyMushroomSalad.jpg",
-    productDescription:
-      "A vibrant mix of mushrooms, carrot, capsicum, cucumber, onions and lettuce, topped with roasted peanuts and tossed in a 'Garlic-Soy Honey Citrus' dressing.",
-    productPrice: 290,
-  },
-  {
-    productName: "Rainbow Harvest Salad (Medium)",
-    productImage:
-      "https://assets.limetray.com/assets/user_images/menus/compressed/1738739820_1736262454RainbowHarvestSalad.jpg",
-    productDescription:
-      "A colorful medley of broccoli, bell peppers, zucchini, sweet corn, iceberg lettuce, purple cabbage, and carrot, perfectly complemented by a tangy yogurt dressing for a burst of freshness.",
-    productPrice: 270,
-  },
-];
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getRestaurantByID, getRestaurantMenuItems, MenuItem, MenuItemsResult } from "@/services/websiteBuilderService";
 
 export default function PartnerPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,7 +23,35 @@ export default function PartnerPage() {
     items: [],
     total: 0,
   });
+  const [restaurant, setRestaurant] = useState<any>(null);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const params = useParams();
+  const partnerId = params.partner_id as string;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [restaurantData, menuData] = await Promise.all([
+          getRestaurantByID(partnerId),
+          getRestaurantMenuItems(partnerId)
+        ]);
+        
+        setRestaurant(restaurantData);
+        setMenuItems(menuData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (partnerId) {
+      fetchData();
+    }
+  }, [partnerId]);
 
   const addToCart = (product: {
     productName: string;
@@ -130,11 +124,38 @@ export default function PartnerPage() {
     router.push(`/checkout?${queryParams.toString()}`);
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-[10%] py-[2%] space-y-6">
+        <div className="space-y-4">
+          <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+          <Card>
+            <CardContent className="p-6 space-y-4">
+              <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!restaurant) {
+    return (
+      <div className="container mx-auto px-[10%] py-[2%] space-y-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600">Restaurant not found</h1>
+          <p className="text-muted-foreground">The restaurant you&apos;re looking for doesn&apos;t exist.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto p-4 space-y-6 pb-24">
+    <div className="container mx-auto px-[10%] py-[2%] space-y-6">
       {/* Header Section */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Burger King</h1>
+        <h1 className="text-2xl font-bold">{restaurant.website_name || "Restaurant"}</h1>
 
         <Card>
           <CardContent className="p-6 space-y-4">
@@ -153,7 +174,7 @@ export default function PartnerPage() {
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
-                <span>Basavanagudi</span>
+                <span>{restaurant.location || "Basavanagudi"}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
@@ -241,12 +262,17 @@ export default function PartnerPage() {
         {/* Menu Items */}
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Recommended (16)</h3>
+            <h3 className="text-lg font-semibold">Recommended ({menuItems.length})</h3>
           </div>
 
-          {productList.map((product) => (
+          {menuItems
+            .filter((product) =>
+              product.dish_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              product.dish_recipe?.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((product) => (
             <Card
-              key={product.productName}
+              key={product.id}
               className="flex justify-between p-4"
             >
               <div className="space-y-2">
@@ -256,24 +282,24 @@ export default function PartnerPage() {
                 >
                   Bestseller
                 </Badge>
-                <h4 className="font-semibold">{product.productName}</h4>
+                <h4 className="font-semibold">{product.dish_name}</h4>
                 <div className="flex items-center gap-2">
-                  <span>₹{product.productPrice}</span>
+                  <span>₹{product.dish_price}</span>
                   <Badge variant="outline" className="text-sm">
                     60% OFF USE STEALDEAL
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground line-clamp-2">
-                  {product.productDescription}
+                  {product.dish_recipe}
                 </p>
               </div>
               <div className="flex flex-col items-center gap-2">
                 <img
-                  src={product.productImage}
-                  alt={product.productName}
+                  src={product.dish_image || "https://via.placeholder.com/96x96?text=No+Image"}
+                  alt={product.dish_name}
                   className="w-24 h-24 object-cover rounded-md"
                 />
-                {getItemQuantity(product.productName) > 0 ? (
+                {getItemQuantity(product.dish_name) > 0 ? (
                   <div className="flex items-center gap-2 border rounded-lg overflow-hidden">
                     <Button
                       variant="ghost"
@@ -281,21 +307,24 @@ export default function PartnerPage() {
                       className="h-8 w-8 rounded-none hover:bg-secondary"
                       onClick={() =>
                         removeFromCart(
-                          product.productName,
-                          product.productPrice
+                          product.dish_name,
+                          product.dish_price
                         )
                       }
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
                     <span className="w-8 text-center font-medium">
-                      {getItemQuantity(product.productName)}
+                      {getItemQuantity(product.dish_name)}
                     </span>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 rounded-none hover:bg-secondary"
-                      onClick={() => addToCart(product)}
+                      onClick={() => addToCart({
+                        productName: product.dish_name,
+                        productPrice: product.dish_price
+                      })}
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -304,7 +333,10 @@ export default function PartnerPage() {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => addToCart(product)}
+                    onClick={() => addToCart({
+                      productName: product.dish_name,
+                      productPrice: product.dish_price
+                    })}
                   >
                     ADD
                   </Button>

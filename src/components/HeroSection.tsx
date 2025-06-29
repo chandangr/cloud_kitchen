@@ -36,7 +36,7 @@ export function HeroSection() {
         <nav className="flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <Image src="/logo.svg" alt="Logo" width={32} height={32} className="h-8" />
-            <span className="text-white text-2xl font-bold">Cloud Kitchen</span>
+            <span className="text-white text-2xl font-bold">Home Cloud Kitchen</span>
           </div>
           <div className="flex items-center gap-6">
             <Button variant="ghost" className="text-white hover:text-white/80">
@@ -57,7 +57,7 @@ export function HeroSection() {
         {/* Hero Content */}
         <div className="py-20">
           <h1 className="text-white text-5xl font-bold text-center mb-6">
-            Order food & groceries. Discover
+            Order home food & Discover
             <br />
             best restaurants. order it!
           </h1>

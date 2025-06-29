@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cloud Kitchen",
-  description: "Cloud Kitchen",
+  title: "Home Cloud Kitchen",
+  description: "Home Cloud Kitchen",
 };
 
 export default function RootLayout({

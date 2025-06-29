@@ -34,7 +34,7 @@ export default function RootPage() {
               }}
               className="text-2xl px-4 md:text-4xl lg:text-5xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto"
             >
-              Book meals from any cloud kitchen{" "}
+              Book meals from any home cloud kitchen{" "}
               <HighlightText className="text-black dark:text-white">
                 At one stop
               </HighlightText>{" "}

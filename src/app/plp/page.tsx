@@ -116,7 +116,7 @@ export default function PLPPage() {
             <Card key={restaurant.id} className="shadow-lg">
               <CardHeader>
                 <CardTitle>{restaurant.website_name}</CardTitle>
-                <CardDescription>{restaurant.description}</CardDescription>
+                <CardDescription className="line-clamp-2 overflow-hidden text-ellipsis">{restaurant.description}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Image
@@ -136,7 +136,7 @@ export default function PLPPage() {
                 </div>
                 <Button
                   className="mt-4 w-full"
-                  onClick={() => router.push(`/pdp/partner/${restaurant.id}`)}
+                  onClick={() => router.push(`/pdp/partner/${restaurant.user_id}`)}
                 >
                   View Details
                 </Button>

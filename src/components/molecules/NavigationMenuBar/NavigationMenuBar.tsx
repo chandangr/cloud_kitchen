@@ -60,7 +60,7 @@ export function NavigationMenuBar() {
         <div>
           <Link href="/" className="flex items-center space-x-2">
             <Icons.logo className="h-8 w-8" />
-            <span className="font-bold text-xl">One Stop Cloud Kitchen</span>
+            <span className="font-bold text-xl">One Stop Home Cloud Kitchen</span>
           </Link>
         </div>
         <NavigationMenu className="relative z-50">
@@ -84,7 +84,7 @@ export function NavigationMenuBar() {
                       >
                         <Icons.logo className="h-6 w-6" />
                         <div className="mb-2 mt-4 text-lg font-medium">
-                          Cloud Kitchen Hub
+                          Home Cloud Kitchen Hub
                         </div>
                         <p className="text-sm leading-tight text-muted-foreground">
                           Empowering food entrepreneurs with modern kitchen
