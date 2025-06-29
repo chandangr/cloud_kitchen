@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 interface HeroBackgroundSectionProps {
   title: string;
   titleColor: string;
@@ -24,19 +26,21 @@ export function HeroBackgroundSection({
   return (
     <div
       className="relative h-full w-full rounded-lg overflow-hidden"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
     >
-      <div className="absolute inset-0 bg-black/50" />
+      {backgroundImage && (
+        <motion.img
+          src={backgroundImage}
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover opacity-35 z-0"
+          style={{ pointerEvents: 'none' }}
+        />
+      )}
       {companyLogo && (
         <div className="absolute top-4 left-4 z-20">
-          <img
+          <motion.img
             src={companyLogo}
             alt="Company Logo"
-            className="h-16 w-auto animate-[scale_0.5s_ease-in-out]"
+            className="h-16 w-auto animate-[scale_0.5s_ease-in-out] opacity-60"
           />
         </div>
       )}
